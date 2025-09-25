@@ -5,7 +5,6 @@ use std::borrow::Cow;
 pub trait Sample: Copy + Clone + Sized + 'static {
     const BYTES: u8;
     const BITS: u16 = Self::BYTES as u16 * 8;
-    const IS_SIGNED: bool;
     const IS_FLOAT: bool = false;
 
     /// A byte array type that can hold the sample's byte representation.
@@ -17,7 +16,6 @@ pub trait Sample: Copy + Clone + Sized + 'static {
 
 impl Sample for u8 {
     const BYTES: u8 = 1;
-    const IS_SIGNED: bool = false;
     type ByteArray = [u8; 1];
 
     fn from_bytes(bytes: &[u8]) -> Self {
@@ -31,7 +29,6 @@ impl Sample for u8 {
 
 impl Sample for i16 {
     const BYTES: u8 = 2;
-    const IS_SIGNED: bool = true;
 
     type ByteArray = [u8; 2];
 
@@ -46,7 +43,6 @@ impl Sample for i16 {
 
 impl Sample for i24 {
     const BYTES: u8 = 3;
-    const IS_SIGNED: bool = true;
 
     type ByteArray = [u8; 3];
 
@@ -61,7 +57,6 @@ impl Sample for i24 {
 
 impl Sample for f32 {
     const BYTES: u8 = 4;
-    const IS_SIGNED: bool = true;
     const IS_FLOAT: bool = true;
 
     type ByteArray = [u8; 4];
@@ -100,6 +95,10 @@ impl<T: Sample> Samples<T> {
 
     pub fn len(&self) -> usize {
         self.data.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.data.is_empty()
     }
 
     pub fn frame_count(&self) -> usize {
