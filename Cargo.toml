@@ -1,0 +1,15 @@
+[package]
+name = "projet_u"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "projet_u"
+path = "src/lib.rs"
+
+[[bin]]
+name = "wav"
+path = "src/wav.rs"
+
+[dependencies]
+i24 = "2"
