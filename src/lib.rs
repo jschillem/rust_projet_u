@@ -102,7 +102,7 @@ impl<T: Sample> Wav<T> {
         writer.write_all(&self.data_chunk.id)?;
         writer.write_all(&self.data_chunk.size.to_le_bytes())?;
 
-        for sample in self.data.into_iter() {
+        for sample in self.data.iter() {
             writer.write_all(sample.to_bytes().as_ref())?;
         }
 

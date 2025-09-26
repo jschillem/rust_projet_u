@@ -11,5 +11,19 @@ path = "src/lib.rs"
 name = "wav"
 path = "src/wav.rs"
 
+[[bin]]
+name = "osc"
+path = "src/osc.rs"
+
+[[bin]]
+name = "phasor"
+path = "src/phasor.rs"
+
+[[bin]]
+name = "bender"
+path = "src/bender.rs"
+
 [dependencies]
+gilrs = "0.11.0"
 i24 = "2"
+jack = "0.13"

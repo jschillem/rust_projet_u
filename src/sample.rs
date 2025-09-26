@@ -133,45 +133,28 @@ impl<T: Sample> Samples<T> {
     pub fn as_slice(&self) -> &[T] {
         &self.data
     }
-}
 
-pub struct SamplesIter<'a, T: Sample> {
-    samples: &'a Samples<T>,
-    pos: usize,
-}
-
-impl<'a, T: Sample> Iterator for SamplesIter<'a, T> {
-    type Item = &'a T;
-
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.samples.len() - self.pos;
-        (len, Some(len))
+    pub fn iter(&self) -> std::slice::Iter<'_, T> {
+        self.data.iter()
     }
 
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.pos < self.samples.len() {
-            let sample = &self.samples.data[self.pos];
-            self.pos += 1;
-            Some(sample)
-        } else {
-            None
+    pub fn iter_mut(&mut self) -> std::slice::IterMut<'_, T> {
+        self.data.to_mut().iter_mut()
+    }
+
+    pub fn try_iter_mut(&mut self) -> Option<std::slice::IterMut<'_, T>> {
+        match &mut self.data {
+            Cow::Owned(vec) => Some(vec.iter_mut()),
+            Cow::Borrowed(_) => None,
+        }
+    }
+
+    pub fn make_owned(&mut self) {
+        if matches!(self.data, Cow::Borrowed(_)) {
+            self.data = Cow::Owned(self.data.to_vec());
         }
     }
 }
-
-impl<'a, T: Sample> IntoIterator for &'a Samples<T> {
-    type Item = &'a T;
-    type IntoIter = SamplesIter<'a, T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        SamplesIter {
-            samples: self,
-            pos: 0,
-        }
-    }
-}
-
-impl<T: Sample> ExactSizeIterator for SamplesIter<'_, T> {}
 
 impl<T: Sample> std::ops::Index<usize> for Samples<T> {
     type Output = T;
